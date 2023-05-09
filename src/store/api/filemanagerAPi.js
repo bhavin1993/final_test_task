@@ -2,9 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const filemanagerAPI = createApi({
     reducerPath: "filemanagerAPI",
     baseQuery: fetchBaseQuery({
-      baseUrl: `https://api.github.com/repos/bhavin1993/test_task`,
+      baseUrl: 'https://api.github.com/repos/bhavin1993/test_task/',
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer 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`,
       },
     }),
     tagTypes: ["Filemanager"],
@@ -14,45 +14,16 @@ export const filemanagerAPI = createApi({
           url: `/contents/`,
           method: "GET",
         }),
-        async onCacheEntryAdded(
-          cacheKey,
-          { data, error, queryFulfilledTimestamp }
-        ) {
-          if (queryFulfilledTimestamp) {
-            const [file] = cacheKey.queryArgs;
-            const deletedFileName = file?.fileName;
-            if (deletedFileName && data) {
-              // If a file was deleted, filter it out of the response data
-              const updatedData = data.filter(
-                (file) => file.name !== deletedFileName
-              );
-              // Return the updated data
-              return { data: updatedData };
-            }
-          }
-          return { data, error };
-        },
-        providesTags: (result) =>
-          result
-            ? [
-                ...result.map(({ name }) => ({
-                  type: "Filemanager",
-                  id: name,
-                })),
-                { type: "Filemanager", id: "LIST" },
-              ]
-            : [{ type: "Filemanager", id: "LIST" }],
       }),
       deleteFile: builder.mutation({
-        query: (params) => ({
-          url: `/contents/${params.fileName}`,
+        query: ({ fileName, sha }) => ({
+          url: `/contents/${fileName}`,
           method: "DELETE",
           body: {
             message: "Delete file",
-            sha: params.sha,
+            sha: sha,
           },
         }),
-        invalidatesTags: ["Filemanager"],
       }),
       getFileByName: builder.mutation({
         query: (params) => ({

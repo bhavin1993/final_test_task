@@ -4,64 +4,56 @@ import Modal from '@material-ui/core/Modal';
 import {
   useDeleteFileMutation,
   useGetFileByNameMutation,
+  useGetSinglefilesMutation,
   useGetFilesQuery,
   useUpdateFileMutation
 } from "@store/api/filemanagerAPi";
 
 const HomePage = () => {
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const { data: fileManagerData } = useGetFilesQuery();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [newContent, setNewContent] = useState("");
-
-  useEffect(() => {
-    if (fileManagerData) {
-      setFiles(fileManagerData);
-    }
-  }, [fileManagerData]);
-  
+  const { data: fileMangerData } = useGetFilesQuery();
   const [deleteFile] = useDeleteFileMutation();
   const [getFileByName] = useGetFileByNameMutation();
   const [updateFile] = useUpdateFileMutation();
+  // const getfilesData = useSelector(getFilesData)
+  useEffect(() => {
+    setFiles(fileMangerData);
+  }, [fileMangerData]);
+
   const handleDelete = async (fileName, sha) => {
     try {
-      const response = await getFileByName({ fileName });
-      if (response?.data?.name === fileName) {
-        // If the file exists, delete it
-        await deleteFile({ fileName, sha });
-        const newFileManagerData = files.filter((file) => file.name !== fileName);
-        setFiles(newFileManagerData);
-      } else {
-        // If the file does not exist, show an error message
-        console.error(`File '${fileName}' does not exist.`);
-      }
-
+      await deleteFile({ fileName, sha });
+      const updatedFiles = files.filter((file) => file.name !== fileName);
+      // dispatch(saveFilesData(updatedFiles)); // Update the state in Redux store
+      setFiles(updatedFiles);
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data);
     }
   };
-
-  const handleCloseModal = () => {
-    setIsEditModalOpen(false);
+  const handleCloseModal = async () => {
+    setIsEditModalOpen(false)
   };
 
   const handleSave = async () => {
     try {
       const response = await getFileByName({ fileName: selectedFile.name });
       const latestSha = response.data.sha;
-      const updateResponse = await updateFile({ fileName: selectedFile.name, sha: latestSha, content: btoa(newContent) });
-      console.log("🚀 ~ file: index.js:54 ~ handleSave ~ updateResponse:", updateResponse)
+      const updateResponse = await updateFile({ fileName: selectedFile.name, sha: latestSha, content: btoa(newContent) })
       const updatedFile = {
         name: selectedFile.name,
         content: newContent,
-        sha: updateResponse?.data?.content?.sha,
+        sha: updateResponse.data.content.sha,
       };
       setFiles(
-        files.map((file) => (file.name === selectedFile?.name ? updatedFile : file))
+        fileMangerData.map((file) =>
+          file.name === selectedFile?.name ? updatedFile : file
+        )
       );
-      setNewContent(updatedFile.content)
-      console.log("🚀 ~ file: index.js:67 ~ handleSave ~ updatedFile.content:", updatedFile.content)
+      setSelectedFile(updatedFile);
+      setNewContent()
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error);
@@ -88,7 +80,7 @@ const HomePage = () => {
           <TableBody>
             {files?.filter((file) => file.type !== 'dir').map((file) => (
               <TableRow key={file.name}>
-                <TableCell component="th" scope="row" style={{ fontWeight: 'bold' }}>
+                <TableCell component="th" scope="row" style={{fontWeight:'bold' }}>
                   {file.name}
                 </TableCell>
                 <TableCell align="center">
@@ -96,7 +88,7 @@ const HomePage = () => {
                     <Button
                       variant="contained"
                       style={{ background: '#ff5722', color: '#fff' }}
-                      onClick={() => handleDelete(file.name, file.sha)}
+                     onClick={() => handleDelete(file.name, file.sha)}
                     >Delete</Button>
                     <Button
                       variant="contained"
@@ -149,11 +141,11 @@ const HomePage = () => {
             }}
           >
             <Button onClick={handleSave} variant="contained"
-              style={{ background: '#4caf50', color: '#fff', marginRight: "10px", fontWeight: 'bold' }}>
+              style={{ background: '#4caf50', color: '#fff', marginRight: "10px",fontWeight:'bold' }}>
               Save
             </Button>
             <Button onClick={handleCloseModal} variant="contained"
-              style={{ background: '#ff5722', color: '#fff', marginRight: "10px", fontWeight: 'bold' }}>Cancel</Button>
+              style={{ background: '#ff5722', color: '#fff', marginRight: "10px", fontWeight:'bold' }}>Cancel</Button>
           </div>
         </div>
       </Modal>
