@@ -2,10 +2,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const filemanagerAPI = createApi({
     reducerPath: "filemanagerAPI",
     baseQuery: fetchBaseQuery({
-      baseUrl: process.env.BASE_URL,
-      // headers: {
-      //   Authorization: `Bearer ${process.env.TOKEN}`,
-      // },
+      baseUrl: `https://api.github.com/repos/bhavin1993/test_task`,
+      headers: {
+        Authorization: `Bearer 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`,
+      },
     }),
     tagTypes: ["Filemanager"],
     endpoints: (builder) => ({
