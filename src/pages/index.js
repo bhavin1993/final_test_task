@@ -54,7 +54,7 @@ const HomePage = () => {
       const updatedFile = {
         name: selectedFile.name,
         content: newContent,
-        sha: updateResponse.data.content.sha,
+        sha: updateResponse?.data?.content?.sha,
       };
       setFiles(
         files.map((file) => (file.name === selectedFile?.name ? updatedFile : file))
