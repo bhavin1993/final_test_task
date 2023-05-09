@@ -4,7 +4,7 @@ export const filemanagerAPI = createApi({
     baseQuery: fetchBaseQuery({
       baseUrl: `https://api.github.com/repos/bhavin1993/test_task`,
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer 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`,
       },
     }),
     tagTypes: ["Filemanager"],
