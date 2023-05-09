@@ -3,9 +3,9 @@ export const filemanagerAPI = createApi({
     reducerPath: "filemanagerAPI",
     baseQuery: fetchBaseQuery({
       baseUrl: process.env.BASE_URL,
-      headers: {
-        Authorization: `token ${process.env.TOKEN}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${process.env.TOKEN}`,
+      // },
     }),
     tagTypes: ["Filemanager"],
     endpoints: (builder) => ({
