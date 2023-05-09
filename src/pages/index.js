@@ -51,6 +51,7 @@ const HomePage = () => {
       const response = await getFileByName({ fileName: selectedFile.name });
       const latestSha = response.data.sha;
       const updateResponse = await updateFile({ fileName: selectedFile.name, sha: latestSha, content: btoa(newContent) });
+      console.log("🚀 ~ file: index.js:54 ~ handleSave ~ updateResponse:", updateResponse)
       const updatedFile = {
         name: selectedFile.name,
         content: newContent,
@@ -59,6 +60,8 @@ const HomePage = () => {
       setFiles(
         files.map((file) => (file.name === selectedFile?.name ? updatedFile : file))
       );
+      setNewContent(updatedFile.content)
+      console.log("🚀 ~ file: index.js:67 ~ handleSave ~ updatedFile.content:", updatedFile.content)
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error);

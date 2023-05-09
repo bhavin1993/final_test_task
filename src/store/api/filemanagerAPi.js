@@ -4,7 +4,7 @@ export const filemanagerAPI = createApi({
     baseQuery: fetchBaseQuery({
       baseUrl: `https://api.github.com/repos/bhavin1993/test_task`,
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer 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`,
       },
     }),
     tagTypes: ["Filemanager"],
@@ -44,28 +44,15 @@ export const filemanagerAPI = createApi({
             : [{ type: "Filemanager", id: "LIST" }],
       }),
       deleteFile: builder.mutation({
-        query: ({ fileName, sha }) => ({
-          url: `/contents/${fileName}`,
+        query: (params) => ({
+          url: `/contents/${params.fileName}`,
           method: "DELETE",
           body: {
             message: "Delete file",
-            sha: sha,
+            sha: params.sha,
           },
         }),
         invalidatesTags: ["Filemanager"],
-        async onQueryStarted(
-          { fileName },
-          { dispatch, queryFulfilled, queryRejected }
-        ) {
-          try {
-            // Wait for the delete mutation to complete
-            await queryFulfilled;
-            // Refetch the file list after deleting the file
-            await dispatch(filemanagerAPI.endpoints.getFiles.initiate());
-          } catch (error) {
-            await queryRejected(error);
-          }
-        },
       }),
       getFileByName: builder.mutation({
         query: (params) => ({
