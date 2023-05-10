@@ -63,6 +63,7 @@ const HomePage = () => {
           )
         );
         setSelectedFile(updatedFile);
+        setNewContent(updatedFile.content);
       }
       setIsEditModalOpen(false);
     } catch (error) {
