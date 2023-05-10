@@ -64,6 +64,7 @@ const HomePage = () => {
         );
         setSelectedFile(updatedFile);
         setNewContent(updatedFile.content);
+        console.log("🚀 ~ file: index.js:68 ~ handleSave ~ updatedFile.content:", updatedFile.content)
       }
       setIsEditModalOpen(false);
     } catch (error) {
