@@ -4,7 +4,7 @@ export const filemanagerAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://api.github.com',
     headers: {
-      Authorization: `Bearer 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`,
+      Authorization: `Bearer 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`,
     },
   }),
   tagTypes: ["Filemanager"],
@@ -26,7 +26,7 @@ export const filemanagerAPI = createApi({
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json, text/plain, */*",
-          "Authorization": `Bearer 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`,
+          "Authorization": `Bearer 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`,
         },
         mode: "cors",
         cache: "no-cache",
@@ -53,7 +53,7 @@ export const filemanagerAPI = createApi({
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json, text/plain, */*",
-            "Authorization": `Bearer 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`,
+            "Authorization": `Bearer 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`,
           },
           mode: "cors",
           cache: "no-cache",
