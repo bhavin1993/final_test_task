@@ -2,9 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const filemanagerAPI = createApi({
   reducerPath: "filemanagerAPI",
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.github.com',
+    baseUrl: `${process.env.API_URL}`,
     headers: {
-      Authorization: `Bearer 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`,
+      Authorization: `Bearer ${process.env.TOKEN}`,
     },
   }),
   tagTypes: ["Filemanager"],
@@ -26,7 +26,7 @@ export const filemanagerAPI = createApi({
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json, text/plain, */*",
-          "Authorization": `Bearer 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`,
+          "Authorization": `Bearer ${process.env.TOKEN}`,
         },
         mode: "cors",
         cache: "no-cache",
@@ -53,7 +53,7 @@ export const filemanagerAPI = createApi({
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json, text/plain, */*",
-            "Authorization": `Bearer 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`,
+            "Authorization": `Bearer ${process.env.TOKEN}`,
           },
           mode: "cors",
           cache: "no-cache",
