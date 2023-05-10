@@ -4,10 +4,10 @@ import Modal from '@material-ui/core/Modal';
 import {
   useDeleteFileMutation,
   useGetFileByNameMutation,
-  useGetSinglefilesMutation,
   useGetFilesQuery,
   useUpdateFileMutation
 } from "@store/api/filemanagerAPi";
+import axios from "axios"
 
 const HomePage = () => {
   const [files, setFiles] = useState([]);
@@ -17,7 +17,8 @@ const HomePage = () => {
   const { data: fileMangerData } = useGetFilesQuery();
   const [deleteFile] = useDeleteFileMutation();
   const [getFileByName] = useGetFileByNameMutation();
-  const [updateFile] = useUpdateFileMutation();
+  // const [updateFile] = useUpdateFileMutation();
+  const [updateFile, { isLoading, isError, error }] = useUpdateFileMutation();
   // const getfilesData = useSelector(getFilesData)
   useEffect(() => {
     setFiles(fileMangerData);
@@ -27,7 +28,6 @@ const HomePage = () => {
     try {
       await deleteFile({ fileName, sha });
       const updatedFiles = files.filter((file) => file.name !== fileName);
-      // dispatch(saveFilesData(updatedFiles)); // Update the state in Redux store
       setFiles(updatedFiles);
     } catch (error) {
       console.error(error.response.data);
@@ -39,21 +39,31 @@ const HomePage = () => {
 
   const handleSave = async () => {
     try {
-      const response = await getFileByName({ fileName: selectedFile.name });
-      const latestSha = response.data.sha;
-      const updateResponse = await updateFile({ fileName: selectedFile.name, sha: latestSha, content: btoa(newContent) })
-      const updatedFile = {
-        name: selectedFile.name,
+      const getFileResponse = await getFileByName({ fileName: selectedFile.name });
+      const latestSha = getFileResponse.data.sha;
+
+      // Update file using mutation
+      const updateResponse = await updateFile({
+        fileName: selectedFile.name,
+        sha: latestSha,
         content: newContent,
-        sha: updateResponse.data.content.sha,
-      };
-      setFiles(
-        fileMangerData.map((file) =>
-          file.name === selectedFile?.name ? updatedFile : file
-        )
-      );
-      setSelectedFile(updatedFile);
-      setNewContent()
+      });
+      console.log("Update response", updateResponse);
+
+      // If update successful, update state and close edit modal
+      if (!updateResponse.error) {
+        const updatedFile = {
+          name: selectedFile.name,
+          content: newContent,
+          sha: updateResponse.data.sha,
+        };
+        setFiles(
+          fileMangerData.map((file) =>
+            file.name === selectedFile.name ? updatedFile : file
+          )
+        );
+        setSelectedFile(updatedFile);
+      }
       setIsEditModalOpen(false);
     } catch (error) {
       console.error(error);
@@ -80,7 +90,7 @@ const HomePage = () => {
           <TableBody>
             {files?.filter((file) => file.type !== 'dir').map((file) => (
               <TableRow key={file.name}>
-                <TableCell component="th" scope="row" style={{fontWeight:'bold' }}>
+                <TableCell component="th" scope="row" style={{ fontWeight: 'bold' }}>
                   {file.name}
                 </TableCell>
                 <TableCell align="center">
@@ -88,7 +98,7 @@ const HomePage = () => {
                     <Button
                       variant="contained"
                       style={{ background: '#ff5722', color: '#fff' }}
-                     onClick={() => handleDelete(file.name, file.sha)}
+                      onClick={() => handleDelete(file.name, file.sha)}
                     >Delete</Button>
                     <Button
                       variant="contained"
@@ -141,11 +151,11 @@ const HomePage = () => {
             }}
           >
             <Button onClick={handleSave} variant="contained"
-              style={{ background: '#4caf50', color: '#fff', marginRight: "10px",fontWeight:'bold' }}>
+              style={{ background: '#4caf50', color: '#fff', marginRight: "10px", fontWeight: 'bold' }}>
               Save
             </Button>
             <Button onClick={handleCloseModal} variant="contained"
-              style={{ background: '#ff5722', color: '#fff', marginRight: "10px", fontWeight:'bold' }}>Cancel</Button>
+              style={{ background: '#ff5722', color: '#fff', marginRight: "10px", fontWeight: 'bold' }}>Cancel</Button>
           </div>
         </div>
       </Modal>
