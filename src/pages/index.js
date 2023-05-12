@@ -7,7 +7,6 @@ import {
   useGetFilesQuery,
   useUpdateFileMutation
 } from "@store/api/filemanagerAPi";
-import axios from "axios"
 
 const HomePage = () => {
   const [files, setFiles] = useState([]);
